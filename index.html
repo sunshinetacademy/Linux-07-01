@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المحاضرة 1 — Kali Linux | Sunshine T Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0d1117; --card:#161b22; --card2:#1c2333;
+    --accent:#00d4aa; --accent2:#ff6b35; --purple:#8b5cf6;
+    --text:#e6edf3; --muted:#8b949e; --warn:#ffd60a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo',sans-serif}
+  body{background:var(--bg);color:var(--text);line-height:1.9}
+  .container{max-width:1100px;margin:0 auto;padding:24px}
+
+  /* ===== Hero ===== */
+  header{background:linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%);
+    padding:50px 20px;text-align:center;border-bottom:3px solid var(--accent)}
+  header .logo{font-size:15px;letter-spacing:2px;color:var(--accent);font-weight:700}
+  header h1{font-size:2.6rem;font-weight:900;margin:12px 0}
+  header h1 span{color:var(--accent)}
+  header .sub{color:var(--muted);font-size:1.1rem}
+  .badge-row{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+  .badge{background:rgba(0,212,170,.12);border:1px solid var(--accent);color:var(--accent);
+    padding:6px 18px;border-radius:50px;font-size:.85rem;font-weight:600}
+  .badge.orange{border-color:var(--accent2);color:var(--accent2);background:rgba(255,107,53,.1)}
+  .badge.purple{border-color:var(--purple);color:var(--purple);background:rgba(139,92,246,.12)}
+
+  /* ===== Sections ===== */
+  section{margin:36px 0}
+  h2{font-size:1.7rem;font-weight:900;margin-bottom:18px;display:flex;align-items:center;gap:12px}
+  h2 .num{background:var(--accent);color:#000;min-width:42px;height:42px;border-radius:12px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900}
+  h3{color:var(--accent);font-size:1.2rem;margin:16px 0 8px}
+
+  .card{background:var(--card);border:1px solid #30363d;border-radius:16px;padding:24px;margin-bottom:18px}
+  .card.orange{border-right:4px solid var(--accent2)}
+  .card.green{border-right:4px solid var(--accent)}
+  .card.yellow{border-right:4px solid var(--warn)}
+  .card.purple{border-right:4px solid var(--purple)}
+
+  /* ===== Comparison ===== */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .compare .col{background:var(--card2);border-radius:12px;padding:20px}
+  .compare h4{font-size:1.1rem;margin-bottom:10px;text-align:center}
+  .compare .win h4{color:#4da3ff}
+  .compare .lin h4{color:var(--accent)}
+  .compare ul{list-style:none}
+  .compare li{padding:6px 0;border-bottom:1px dashed #30363d;font-size:.95rem}
+  .compare li:last-child{border:none}
+  @media(max-width:700px){.compare{grid-template-columns:1fr}}
+
+  /* ===== Terminal ===== */
+  .terminal{background:#0a0e14;border:1px solid #30363d;border-radius:12px;overflow:hidden;margin:16px 0}
+  .term-bar{background:#21262d;padding:8px 16px;display:flex;gap:8px;align-items:center}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .red{background:#ff5f56}.yel{background:#ffbd2e}.grn{background:#27c93f}
+  .term-title{color:var(--muted);font-size:.8rem;margin-right:10px;font-family:'JetBrains Mono',monospace}
+  .term-body{padding:18px;font-family:'JetBrains Mono',monospace;font-size:.9rem;direction:ltr;text-align:left}
+  .prompt{color:#27c93f}
+  .cmd{color:#e6edf3}
+  .comment{color:#8b949e}
+  .output{color:#79c0ff}
+  .term-body .line{margin-bottom:6px}
+
+  /* ===== Tables ===== */
+  table{width:100%;border-collapse:collapse;margin:14px 0}
+  th{background:var(--card2);color:var(--accent);padding:12px;font-size:.95rem}
+  td{padding:11px 14px;border-bottom:1px solid #30363d;font-size:.93rem}
+  tr:hover td{background:rgba(0,212,170,.05)}
+  code.inline{background:#21262d;color:var(--accent);padding:2px 8px;border-radius:6px;
+    font-family:'JetBrains Mono',monospace;font-size:.85rem;direction:ltr;display:inline-block}
+
+  /* ===== Callouts ===== */
+  .callout{border-radius:12px;padding:18px 20px;margin:16px 0;display:flex;gap:14px;align-items:flex-start}
+  .callout .icon{font-size:1.6rem}
+  .callout.warn{background:rgba(255,214,10,.08);border:1px solid rgba(255,214,10,.4)}
+  .callout.info{background:rgba(77,163,255,.08);border:1px solid rgba(77,163,255,.4)}
+  .callout.success{background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.4)}
+
+  /* ===== Objectives ===== */
+  .objectives{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:16px 0}
+  .obj{background:var(--card2);border-radius:12px;padding:18px;text-align:center;border-top:3px solid var(--accent)}
+  .obj .emoji{font-size:2rem}
+  .obj p{font-size:.9rem;margin-top:8px}
+
+  /* ===== Steps ===== */
+  .step{display:flex;gap:16px;margin-bottom:18px;align-items:flex-start}
+  .step .n{background:var(--purple);color:#fff;min-width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-weight:900}
+  .step .content h4{color:var(--accent2)}
+  .step .content p{font-size:.95rem;color:var(--muted)}
+
+  footer{text-align:center;padding:30px;color:var(--muted);border-top:1px solid #30363d;margin-top:40px}
+  footer .brand{color:var(--accent);font-weight:900}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">☀️ SUNSHINE T ACADEMY — LEVEL 3</div>
+  <h1>المحاضرة 1: <span>Kali Linux</span> — ليه المحترفين بيستخدموه؟</h1>
+  <div class="sub">أساسيات Terminal — أول خطوة في طريق محلل الأمن السيبراني</div>
+  <div class="badge-row">
+    <div class="badge">⏱️ 120 دقيقة</div>
+    <div class="badge orange">👥 أعمار 12–15</div>
+    <div class="badge purple">💻 50% عملي Hands-on</div>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ========== أهداف المحاضرة ========== -->
+<section>
+  <h2><span class="num">🎯</span> أهداف المحاضرة</h2>
+  <div class="objectives">
+    <div class="obj"><div class="emoji">🐉</div><p>يعرف إيه هو Kali Linux وليه هو النظام رقم 1 في الأمن السيبراني</p></div>
+    <div class="obj"><div class="emoji">🖥️</div><p>يشتغل على Kali داخل VirtualBox بأمان تام</p></div>
+    <div class="obj"><div class="emoji">⌨️</div><p>يتقن 10 أوامر أساسية في Terminal</p></div>
+    <div class="obj"><div class="emoji">📁</div><p>ينشئ وينظم ملفات ومجلدات شغله بنفسه</p></div>
+  </div>
+</section>
+
+<!-- ========== 1: إيه هو لينكس ========== -->
+<section>
+  <h2><span class="num">1</span> إيه هو Linux أصلاً؟</h2>
+  <div class="card green">
+    <p>تخيل إن نظام التشغيل زي <b>بيت</b> 🏠:</p>
+    <ul style="margin:10px 24px">
+      <li><b>Windows</b> = بيت جاهز اشتريته — الباب مقفول، مش مسموح تغير في الحوائط، وأنت مش عارف جوه الحيطان في إيه.</li>
+      <li><b>Linux</b> = بيت <b>مفتوح 100%</b> — تقدر تشوف كل حاجة جواه، تعدل أي حاجة، وتخصصه زي ما تحب بالظبط!</li>
+    </ul>
+    <p>Linux نظام تشغيل <b>مفتوح المصدر (Open Source)</b> — معناه إن كوده متاح للكل، وآلاف المطورين حوالين العالم بيحسنوه كل يوم. وعلشان كده هو الأكثر أمانًا: آلاف العيون بتدقق فيه مش شركة واحدة بس.</p>
+  </div>
+
+  <h3>🤯 معلومة تصدم الطلبة</h3>
+  <div class="card orange">
+    <p>Linux مش بس في اللاب بتاعنا — هو في حياتك أكتر مما تتخيل:</p>
+    <table>
+      <tr><th>الجهاز</th><th>بيشتغل بـ Linux؟</th></tr>
+      <tr><td>📱 أندرويد (موبايلك)</td><td>✅ نعم — مبني على Linux!</td></tr>
+      <tr><td>📺 سمارت تي في</td><td>✅ غالبًا نعم</td></tr>
+      <tr><td>☁️ السيرفرات العملاقة (Google, Amazon, Netflix)</td><td>✅ أكثر من 90% منها Linux</td></tr>
+      <tr><td>🛰️ أقمار الصناعة والمركبات الفضائية</td><td>✅ حتى NASA بتستخدمه</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ========== 2: مقارنة Windows vs Linux ========== -->
+<section>
+  <h2><span class="num">2</span> Windows vs Linux — المقارنة الكبيرة</h2>
+  <div class="compare">
+    <div class="col win">
+      <h4>🪟 Windows</h4>
+      <ul>
+        <li>💵 مدفوع (رخصة)</li>
+        <li>🖱️ كل حاجة بالماوس والواجهات</li>
+        <li>🔒 كوده مقفول — ما تعرفش جواه إيه</li>
+        <li>🎯 هدف كبير للفيروسات (أكبر عدد مستخدمين)</li>
+        <li>👨‍💻 مناسب للاستخدام اليومي والمكتب</li>
+      </ul>
+    </div>
+    <div class="col lin">
+      <h4>🐧 Linux</h4>
+      <ul>
+        <li>🆓 مجاني بالكامل</li>
+        <li>⌨️ كل حاجة ممكن بالأوامر — أسرع وأدق</li>
+        <li>📖 كوده مفتوح — الكل يقدر يقرأه ويدقق أمانه</li>
+        <li>🛡️ أكثر أمانًا وثباتًا</li>
+        <li>🕵️‍♂️ اختيار الهاكرز الأخلاقيين ومحللي الأمن — وده سبب وجودنا هنا!</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>طيب... ليه Kali بالذات؟ 🐉</h3>
+  <div class="card purple">
+    <p><b>Kali Linux</b> هي توزيعة Linux مخصصة للأمن السيبراني، من تطوير شركة Offensive Security. جواها <b>أكثر من 600 أداة أمنية</b> جاهزة ومثبتة سلفًا — منهم أدوات عرفناها قبل كده على Windows:</p>
+    <table>
+      <tr><th>الأداة</th><th>بتعمل إيه؟</th><th>عرفناها في...</th></tr>
+      <tr><td><code class="inline">Nmap</code></td><td>فحص الشبكات واكتشاف الأجهزة</td><td>المستوى التاني (Windows) ✅</td></tr>
+      <tr><td><code class="inline">Wireshark</code></td><td>تحليل بيانات الشبكة حزمة بحزمة</td><td>المستوى التاني (Windows) ✅</td></tr>
+      <tr><td><code class="inline">John the Ripper</code></td><td>اختبار قوة كلمات السر</td><td>المستوى التالت (جديد!) 🆕</td></tr>
+      <tr><td><code class="inline">Metasploit</code></td><td>إطار عمل اختبار الاختراق</td><td>المستويات الجاية 🔮</td></tr>
+    </table>
+    <p style="margin-top:12px">💡 <b>الخلاصة:</b> انت مش بتبدأ من الصفر — انت هتشوف نفس أدواتك القديمة لكن بيئة المحترفين!</p>
+  </div>
+</section>
+
+<!-- ========== 3: VirtualBox ========== -->
+<section>
+  <h2><span class="num">3</span> تشغيل Kali بأمان — عالم VirtualBox</h2>
+
+  <div class="callout warn">
+    <div class="icon">⚠️</div>
+    <div><b>القاعدة الذهبية في Sunshine T Academy:</b><br>
+    كل أدوات الأمان دي بنستخدمها <b>فقط</b> داخل الشبكة المعزولة بتاعت اللاب، وعلى الأجهزة اللي مسموح لنا نختبرها.<br>
+    🚫 استخدامها على أجهزة ناس تانية من غير إذن = جريمة يعاقب عليها القانون.<br>
+    ✅ استخدامها باحترافية وإذن = مهنة مستقبلية مرموقة ومرتباتها ممتازة!</div>
+  </div>
+
+  <div class="card">
+    <p><b>إيه هو الـ Virtual Machine (الجهاز الافتراضي)؟</b></p>
+    <p>تخيل إن عندك <b>كمبيوتر جوه الكمبيوتر</b> 🖥️⬅️🖥️ — برنامج زي VirtualBox بيعمل لك "جهاز وهمي" كامل بنافذته وقرصه وشبكته. لو الجهاز الوهمي باظ أو اتلخبط... الجهاز الحقيقي بتاعك مفيهوش أي حاجة!</p>
+    <div class="step" style="margin-top:16px"><div class="n">1</div><div class="content"><h4>حمّل برنامج VirtualBox</h4><p>مجاني من موقع virtualbox.org — أو سيبه للمدرّس وهو هيعمله في اللاب.</p></div></div>
+    <div class="step"><div class="n">2</div><div class="content"><h4>افتح ملف Kali الجاهز</h4><p>هنعطيك ملف جهاز افتراضي جاهز (Appliance) فيه Kali معد مسبقًا بكل الأدوات.</p></div></div>
+    <div class="step"><div class="n">3</div><div class="content"><h4>شغّل وادخل</h4><p>Username: <code class="inline">kali</code> / Password: <code class="inline">kali</code> — وأهلاً بيك في عالم المحترفين! 🐉</p></div></div>
+  </div>
+</section>
+
+<!-- ========== 4: جولة في Kali ========== -->
+<section>
+  <h2><span class="num">4</span> جولة أولى في Kali — اتعرف على شاشتك</h2>
+  <div class="card green">
+    <table>
+      <tr><th>العنصر</th><th>شويفه ووظيفته</th></tr>
+      <tr><td><b>شريط التطبيقات</b> (أعلى/أسفل)</td><td>زي Start في Windows — كل أدواتك الـ600 موجودة هنا، مقسمة بالفئات (01 - Information Gathering, 07 - Sniffing...)</td></tr>
+      <tr><td><b>Terminal</b> 🖤</td><td>النافذة السوداء الأسطورية — قلب Kali النابض. هنقضي معظم وقتنا هنا. (افتحه بـ Ctrl+Alt+T)</td></tr>
+      <tr><td><b>مدير الملفات</b></td><td>زي File Explorer — بس هنفضل نتحرك بالأوامر زي المحترفين</td></tr>
+      <tr><td><b>Firefox</b></td><td>متصفح جاهز للاستخدام</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ========== 5: أساسيات Terminal ========== -->
+<section>
+  <h2><span class="num">5</span> 💻 Terminal — لغة المحترفين</h2>
+
+  <div class="card">
+    <p><b>يعني إيه Terminal؟</b> هو نافذة بتكلم فيها الكمبيول <b>بالأوامر مباشرة</b> بدل الماوس. في الأول شكله مخيف، بس لما تتعلمه هتلاقي نفسك أسرع 10 مرات — وده الفرق الحقيقي بين المستخدم العادي والمحترف.</p>
+    <p style="margin-top:10px"><b>بنية السطر:</b></p>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div><span class="term-title">kali@sunshine</span></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">ls</span></div>
+        <div class="line"><span class="comment">└─ kali = اسم المستخدم | sunshine = اسم الجهاز | ~ = موقعك (Home) | $ = أنت مستخدم عادي (لو # يبقى root!)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>📜 الأوامر العشرة الذهبية — بالشرح والتمثيل</h3>
+
+  <div class="card">
+    <h3>1️⃣ <code class="inline">pwd</code> — أنا فين؟</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">pwd</span></div>
+        <div class="line"><span class="output">/home/kali</span></div>
+        <div class="line"><span class="comment"># يعني: أنا واقف في مجلد الـ home بتاع kali</span></div>
+      </div>
+    </div>
+    <p>💡 زي ما تفتح خرائط جوجل وتشوف "موقعك الحالي" — أول سؤال تسأله لأي محترف في أي نظام.</p>
+  </div>
+
+  <div class="card">
+    <h3>2️⃣ <code class="inline">ls</code> — اعرضلي اللي في المكان ده</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">ls</span></div>
+        <div class="line"><span class="output">Desktop  Documents  Downloads  Pictures</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">ls -l</span></div>
+        <div class="line"><span class="output">drwxr-xr-x 2 kali kali 4096 Oct  8 10:30 Desktop</span></div>
+      </div>
+    </div>
+    <p>💡 <code class="inline">ls</code> = عرض عادي | <code class="inline">ls -l</code> = عرض بتفاصيل (الحجم، التاريخ، الصلاحيات) | <code class="inline">ls -a</code> = اعرض حتى الملفات المخفية 🕵️</p>
+  </div>
+
+  <div class="card">
+    <h3>3️⃣ <code class="inline">cd</code> — تنقل بين المجلدات</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">cd Desktop</span>   <span class="comment"># ادخل على سطح المكتب</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~/Desktop$</span> <span class="cmd">cd ..</span>    <span class="comment"># ارجع خطوة للخلف</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">cd /</span>          <span class="comment"># روح لأصل النظام كله</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:/$</span> <span class="cmd">cd ~</span>          <span class="comment"># ارجع لبيتي (Home)</span></div>
+      </div>
+    </div>
+    <p>💡 <code class="inline">cd</code> زي "الأنابيب السرية" في ألعاب الفيديو — بتتنقل بين الغرف فورًا!</p>
+  </div>
+
+  <div class="card">
+    <h3>4️⃣ و 5️⃣ <code class="inline">mkdir</code> و <code class="inline">touch</code> — إنشاء مجلد وملف</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">mkdir SunshineLab</span>    <span class="comment"># أنشئ مجلد جديد</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">cd SunshineLab</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~/SunshineLab$</span> <span class="cmd">touch report.txt</span>  <span class="comment"># أنشئ ملف فاضي</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~/SunshineLab$</span> <span class="cmd">ls</span></div>
+        <div class="line"><span class="output">report.txt</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>6️⃣ و 7️⃣ <code class="inline">nano</code> و <code class="inline">cat</code> — اكتب واقرأ الملفات</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">nano report.txt</span></div>
+        <div class="line"><span class="comment"># يفتح محرر نصوص جوه الترمينال — اكتب: "My first Kali session!"</span></div>
+        <div class="line"><span class="comment"># اضغط Ctrl+O للحفظ ثم Enter، و Ctrl+X للخروج</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">cat report.txt</span></div>
+        <div class="line"><span class="output">My first Kali session!</span></div>
+      </div>
+    </div>
+    <p>💡 <code class="inline">nano</code> = دفترك للكتابة | <code class="inline">cat</code> = يقرألك الملف بصوت عالي (يطبع محتواه)</p>
+  </div>
+
+  <div class="card">
+    <h3>8️⃣ و 9️⃣ و 🔟 <code class="inline">cp</code> و <code class="inline">mv</code> و <code class="inline">rm</code> — انسخ، انقل، امسح</h3>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">cp report.txt backup.txt</span>   <span class="comment"># انسخ الملف</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">mv backup.txt old.txt</span>     <span class="comment"># انقل أو أعِد تسمية</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">rm old.txt</span>                 <span class="comment"># امسح</span></div>
+        <div class="line"><span class="prompt">kali@sunshine:~$</span> <span class="cmd">clear</span>                      <span class="comment"># نضف الشاشة</span></div>
+      </div>
+    </div>
+    <div class="callout warn"><div class="icon">⚠️</div>
+      <div><b>تحذير المبتدئين رقم 1:</b> مفيش "سلة مهملات" في Terminal! <code class="inline">rm</code> بيمسح للأبد.<br>
+      ومفيش أسوأ من <code class="inline">rm -rf</code> — تلمسها غير وهي بتخصوص مستنداتك، فخليك مركّز! 😅</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== التمرين العملي ========== -->
+<section>
+  <h2><span class="num">🛠️</span> التمرين العملي — 50 دقيقة (يدي في يدي)</h2>
+
+  <div class="card green">
+    <h3>🏋️ تمرين 1: بناء عالمك (15 دقيقة)</h3>
+    <p>نفّذ الأوامر دي بالترتيب وبعد كل واحدة نفّذ <code class="inline">pwd</code> و<code class="inline">ls</code> عشان تشوف اللي حصل:</p>
+    <div class="terminal"><div class="term-bar"><div class="dot red"></div><div class="dot yel"></div><div class="dot grn"></div></div>
+      <div class="term-body">
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cd ~</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">mkdir SunshineLab</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cd SunshineLab</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">mkdir Level3</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cd Level3</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">mkdir Networks Security</span>   <span class="comment"># مجلدين بأمر واحد!</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cd Security</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">touch my_story.txt</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">nano my_story.txt</span>   <span class="comment"># اكتب فيه: اسمك + ليه عايز تتعلم أمن سيبراني</span></div>
+        <div class="line"><span class="prompt">$</span> <span class="cmd">cat my_story.txt</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card green">
+    <h3>🏋️ تمرين 2: لعبة المطاردة 🕵️ (10 دقائق)</h3>
+    <p>المدرّس وضع ملف سري في مكان ما في النظام! استخدم مهاراتك:</p>
+    <ul style="margin:8px 24px">
+      <li><code class="inline">ls</code> في كل مجلد تدخله</li>
+      <li><code class="inline">ls -a</code> لو مش لاقي حاجة (اتذكر الملفات المخفية!)</li>
+      <li>أول ما تلاقي الملف افتحه بـ <code class="inline">cat</code> واقرأ الرسالة السرية</li>
+      <li>🏆 أول 3 طلاب يوصلوا ليها = نقاط مكافأة</li>
+    </ul>
+  </div>
+
+  <div class="card green">
+    <h3>🏋️ تمرين 3: مدير الملفات السريع (15 دقيقة)</h3>
+    <p>اعمل التالي من غير ما تفتح أي نافذة رسومية — Terminal فقط:</p>
+    <table>
+      <tr><th>المطلوب</th><th>تلميح</th></tr>
+      <tr><td>مجلد باسمك جوه SunshineLab</td><td><code class="inline">mkdir</code></td></tr>
+      <tr><td>ملف <code class="inline">notes.txt</code> فيه 3 حاجات اتعلمتها النهاردة</td><td><code class="inline">touch</code> ثم <code class="inline">nano</code></td></tr>
+      <tr><td>نسخة من الملف باسم <code class="inline">notes_backup.txt</code></td><td><code class="inline">cp</code></td></tr>
+      <tr><td>إعادة تسمية النسخة لـ <code class="inline">week1.txt</code></td><td><code class="inline">mv</code></td></tr>
+      <tr><td>مسح النسخة القديمة</td><td><code class="inline">rm</code></td></tr>
+      <tr><td>صورة شاشة للنتيجة النهائية بـ <code class="inline">ls -l</code></td><td>للواجب 📸</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ========== الخلاصة والواجب ========== -->
+<section>
+  <h2><span class="num">📌</span> خلاصة المحاضرة + الواجب</h2>
+
+  <div class="card yellow">
+    <h3>🗣️ راجع مع نفسك (أسئلة المراجعة السريعة)</h3>
+    <ol style="margin:8px 24px">
+      <li>يعني إيه نظام مفتوح المصدر، وإيه الفرق بينه وبين المغلق؟</li>
+      <li>إيه الفرق بين <code class="inline">$</code> و <code class="inline">#</code> في نهاية سطر Terminal؟</li>
+      <li>إيه الأمر اللي بيجاوبك على سؤال "أنا فين؟"؟</li>
+      <li>ليه لازم ناخد بالنا من أمر <code class="inline">rm</code>؟</li>
+      <li>ليه بنشتغل داخل VirtualBox ومش مباشرة على الجهاز؟</li>
+    </ol>
+  </div>
+
+  <div class="card purple">
+    <h3>📝 الواجب المنزلي</h3>
+    <ol style="margin:8px 24px">
+      <li>صوّر شاشة بعد تنفيذ التمرين 3 كامل (النتيجة النهائية بـ <code class="inline">ls -l</code>)</li>
+      <li>اكتب في ملف <code class="inline">homework.txt</code> باستخدام nano: معنى كل أمر من العشرة اللي اتعلمناهم بكلماتك انت</li>
+      <li>❓ <b>سؤال التفكير:</b> لو عندك 3 مجلدات متداخلة وعايز تنشئهم كلهم بأمر واحد — تدور في Google عن "mkdir with parents" وقولنا اكتشفت إيه</li>
+    </ol>
+  </div>
+
+  <div class="callout success">
+    <div class="icon">🔮</div>
+    <div><b>المحاضرة الجاية:</b> هندخل عالم الصلاحيات والمستخدمين — هتعرف ليه فيه "root" وده اللي بيخلي Linux قلعة حقيقية، وهتعمل ملف سري محمي بنفسك! 🔐</div>
+  </div>
+</section>
+
+<footer>
+  <p>☀️ <span class="brand">Sunshine T Academy</span> — Level 3: Kali Linux Fundamentals</p>
+  <p>Lecture 1 of 7 | المحاضرة الثانية: المستخدمون والصلاحيات</p>
+</footer>
+
+</div>
+</body>
+</html>
